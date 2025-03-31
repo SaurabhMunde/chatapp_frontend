@@ -26,11 +26,12 @@ export const useWebSocket = () => {
     return () => client.deactivate();
   }, []);
 
-  const sendMessage = (content, sender) => {
+  const sendMessage = (content) => {
     if (stompClient) {
+      const username = localStorage.getItem("username") || "Anonymous"; // Get saved username
       stompClient.publish({
         destination: "/app/message",
-        body: JSON.stringify({ content, sender }),
+        body: JSON.stringify({ content, sender: username }),
       });
     }
   };
