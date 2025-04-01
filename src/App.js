@@ -5,13 +5,13 @@ import Login from "./Login";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Check if the username exists in localStorage on component mount
-  useEffect(() => {
-    const username = localStorage.getItem("username");
-    if (username) {
-      setIsLoggedIn(true);  // If username is found, automatically log in
-    }
-  }, []);
+    //  // Check if the username exists in localStorage on component mount
+    //  useEffect(() => {
+    //    const username = localStorage.getItem("username");
+    //    if (username) {
+    //      setIsLoggedIn(true);  // If username is found, automatically log in
+    //    }
+    //  }, []);
 
   return (
     <div className="App">
