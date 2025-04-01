@@ -7,6 +7,7 @@ const SOCKET_URL = "https://chat-backend-production-960b.up.railway.app/chat";
 export const useWebSocket = () => {
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
+  const [isUsernameValid, setIsUsernameValid] = useState(true);
 
   useEffect(() => {
     const socket = new SockJS(SOCKET_URL);
@@ -17,6 +18,16 @@ export const useWebSocket = () => {
         client.subscribe("/topics/messages", (message) => {
           setMessages((prev) => [...prev, JSON.parse(message.body)]);
         });
+
+        client.subscribe("/topics/user-validation", (message) =>{
+        if(message.body === "Error: Username already taken"){
+        setIsUsernameValid(false);
+        else{
+        setIsUsernameValid(true);
+        localStorage.setItem("username",localStorage.getItem("pendingUsername"));
+        }
+        }
+        });
       },
     });
 
@@ -25,6 +36,14 @@ export const useWebSocket = () => {
 
     return () => client.deactivate();
   }, []);
+
+   const registerUsername = (username) => {
+      localStorage.setItem("pendingUsername", username);
+      stompClient.publish({
+        destination: "/app/register",
+        body: username,
+      });
+    };
 
   const sendMessage = (content) => {
     if (stompClient) {
@@ -36,5 +55,5 @@ export const useWebSocket = () => {
     }
   };
 
-  return { messages, sendMessage };
+  return { messages, sendMessage, registerUsername, isUsernameValid };
 };

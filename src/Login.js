@@ -1,26 +1,27 @@
 import {useState} from "react";
+import { useWebSocket } from "./useWebSocket";
 
-function Login({onLogin}){
-const [username, setUsername] = useState("");
-const handleLogin = () => {
-if(!username.trim()){
-alert("please enter a username");
-return;
-}
-localStorage.setItem("username", username);
-onLogin(username);
+const Login = ({ setLoggedIn }) => {
+  const [username, setUsername] = useState("");
+  const { registerUsername, isUsernameValid } = useWebSocket();
+
+  const handleLogin = () => {
+    registerUsername(username);
+  };
+
+  return (
+    <div>
+      <h2>Select a Username</h2>
+      <input
+        type="text"
+        placeholder="Enter username..."
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <button onClick={handleLogin}>Join</button>
+      {!isUsernameValid && <p style={{ color: "red" }}>Username already taken!</p>}
+    </div>
+  );
 };
 
-return (
-<div className = "login-container">
-<h2>Enter a Username</h2>
-<input type ="text"
-placeholder = "username"
-value = {username}
-onChange={(e) => setUsername(e.target.value)}
-/>
-<button onClick={handleLogin}>Join chat</button>
-</div>
-);
-}
 export default Login;
