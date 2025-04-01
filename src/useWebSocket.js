@@ -48,6 +48,7 @@ export const useWebSocket = () => {
     }
 
     localStorage.setItem("pendingUsername", username);
+     window.location.reload();
     stompClient.publish({
       destination: "/app/register",
       body: username,
