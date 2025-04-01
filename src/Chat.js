@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useWebSocket } from "./useWebSocket";
 
-const Chat = () => {
+const Chat = ({ setLoggedIn }) => {
   const { messages, sendMessage } = useWebSocket();
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    // Ensure username is stored in localStorage (used in useWebSocket)
-    if (!localStorage.getItem("username")) {
-      localStorage.setItem("username", "Anonymous");
-    }
-  }, []);
+  // Logout function to clear username from localStorage
+  const handleLogout = () => {
+    localStorage.removeItem("username");
+    setLoggedIn(false); // Reset login state in the parent component
+  };
 
   const handleSend = () => {
     if (!message.trim()) return; // Prevent empty messages
@@ -20,6 +19,7 @@ const Chat = () => {
 
   return (
     <div className="chat-container">
+      <button onClick={handleLogout}>Logout</button> {/* Logout button */}
       <div className="messages">
         {messages.map((msg, index) => (
           <div key={index}>
