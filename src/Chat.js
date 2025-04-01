@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useWebSocket } from "./useWebSocket";
 
 const Chat = () => {
@@ -6,7 +6,20 @@ const Chat = () => {
   const [message, setMessage] = useState("");
   const [username, setUsername] = useState("User");
 
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username") || "Anonymous";
+    setUsername(storedUsername);
+  }, []);
+
+  const handleSend = () => {
+    if (!message.trim()) return; // Prevent sending empty messages
+    sendMessage(message);
+    setMessage(""); // Clear input after sending
+  };
+
   return (
+    <div className="chat-container">
+      <div className="messages">
         {messages.map((msg, index) => (
           <div key={index}>
             <strong>{msg.sender}: </strong> {msg.content}
@@ -19,9 +32,7 @@ const Chat = () => {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       />
-      <button onClick={() => { sendMessage(message, username); setMessage(""); }}>
-        Send
-      </button>
+      <button onClick={handleSend}>Send</button>
     </div>
   );
 };
