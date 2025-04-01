@@ -8,6 +8,7 @@ export const useWebSocket = () => {
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
   const [isUsernameValid, setIsUsernameValid] = useState(true);
+  const [isConnected, setIsConnected] = useState(false); // Track if WebSocket is connected
 
   useEffect(() => {
     const socket = new SockJS(SOCKET_URL);
@@ -15,18 +16,19 @@ export const useWebSocket = () => {
       webSocketFactory: () => socket,
       onConnect: () => {
         console.log("Connected!");
+        setIsConnected(true); // Set to true once connected
         client.subscribe("/topics/messages", (message) => {
           setMessages((prev) => [...prev, JSON.parse(message.body)]);
         });
 
-        client.subscribe("/topics/user-validation", (message) =>{
-        if(message.body === "Error: Username already taken"){
-        setIsUsernameValid(false);}
-        else{
-        setIsUsernameValid(true);
-        localStorage.setItem("username",localStorage.getItem("pendingUsername"));
-        }
-
+        client.subscribe("/topics/user-validation", (message) => {
+          if (message.body === "ERROR: Username already taken") {
+            setIsUsernameValid(false);
+          } else {
+            setIsUsernameValid(true);
+            // Store username in localStorage if validation succeeds
+            localStorage.setItem("username", localStorage.getItem("pendingUsername"));
+          }
         });
       },
     });
@@ -34,26 +36,32 @@ export const useWebSocket = () => {
     client.activate();
     setStompClient(client);
 
-    return () => client.deactivate();
+    return () => {
+      client.deactivate();
+    };
   }, []);
 
-   const registerUsername = (username) => {
-      localStorage.setItem("pendingUsername", username);
-      stompClient.publish({
-        destination: "/app/register",
-        body: username,
-      });
-    };
+  const registerUsername = (username) => {
+    if (!isConnected) {
+      console.log("Not connected yet. Please wait.");
+      return; // Don't attempt to register username before WebSocket is connected
+    }
+
+    localStorage.setItem("pendingUsername", username);
+    stompClient.publish({
+      destination: "/app/register",
+      body: username,
+    });
+  };
 
   const sendMessage = (content) => {
     if (stompClient) {
-      const username = localStorage.getItem("username") || "Anonymous"; // Get saved username
       stompClient.publish({
         destination: "/app/message",
-        body: JSON.stringify({ content, sender: username }),
+        body: JSON.stringify({ content, sender: localStorage.getItem("username") }),
       });
     }
   };
 
-  return { messages, sendMessage, registerUsername, isUsernameValid };
+  return { messages, sendMessage, registerUsername, isUsernameValid, isConnected };
 };
