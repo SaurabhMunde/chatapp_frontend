@@ -4,17 +4,18 @@ import { useWebSocket } from "./useWebSocket";
 const Chat = () => {
   const { messages, sendMessage } = useWebSocket();
   const [message, setMessage] = useState("");
-  const [username, setUsername] = useState("User");
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem("username") || "Anonymous";
-    setUsername(storedUsername);
+    // Ensure username is stored in localStorage (used in useWebSocket)
+    if (!localStorage.getItem("username")) {
+      localStorage.setItem("username", "Anonymous");
+    }
   }, []);
 
   const handleSend = () => {
-    if (!message.trim()) return; // Prevent sending empty messages
+    if (!message.trim()) return; // Prevent empty messages
     sendMessage(message);
-    setMessage(""); // Clear input after sending
+    setMessage(""); // Clear input
   };
 
   return (
