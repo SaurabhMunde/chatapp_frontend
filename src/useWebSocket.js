@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-
+//adding comment for testing
 const SOCKET_URL = "https://chat-backend-production-960b.up.railway.app/chat";
 
 export const useWebSocket = () => {
