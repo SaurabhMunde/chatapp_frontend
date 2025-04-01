@@ -7,7 +7,7 @@ const Login = ({ setLoggedIn }) => {
 
   const handleLogin = () => {
     registerUsername(username);
-    location.reload();
+    window.location.reload();
   };
 
   // Disable button if WebSocket is not connected
