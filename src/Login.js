@@ -14,10 +14,18 @@ const Login = ({ setLoggedIn }) => {
   const isJoinButtonDisabled = !isConnected || !username;
 
   useEffect(() => {
-    if (localStorage.getItem("username")) {
+  const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
       setLoggedIn(true); // If username is in localStorage, directly log in
     }
   }, [setLoggedIn]);
+
+   useEffect(() => {
+      // If username is valid, navigate to the chat
+      if (isUsernameValid) {
+        setLoggedIn(true);
+      }
+    }, [isUsernameValid, setLoggedIn]);
 
   return (
     <div>
