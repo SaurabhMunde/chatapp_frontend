@@ -1,13 +1,6 @@
 import React from "react";
 import Chat from "./Chat";
-<<<<<<< HEAD
-
-function App() {
-  return (
-    <div>
-      <Chat />
-import {useState, useEffect} from "react";
-import Login from "./Login";
+import { useState, useEffect } from "react";
 
 
 function App() {
