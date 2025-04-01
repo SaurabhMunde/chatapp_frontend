@@ -21,12 +21,12 @@ export const useWebSocket = () => {
 
         client.subscribe("/topics/user-validation", (message) =>{
         if(message.body === "Error: Username already taken"){
-        setIsUsernameValid(false);
+        setIsUsernameValid(false);}
         else{
         setIsUsernameValid(true);
         localStorage.setItem("username",localStorage.getItem("pendingUsername"));
         }
-        }
+
         });
       },
     });
