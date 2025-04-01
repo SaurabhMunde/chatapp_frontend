@@ -7,15 +7,6 @@ const Chat = () => {
   const [username, setUsername] = useState("User");
 
   return (
-    <div>
-      <h2>Chat App</h2>
-      <input
-        type="text"
-        placeholder="Enter username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <div>
         {messages.map((msg, index) => (
           <div key={index}>
             <strong>{msg.sender}: </strong> {msg.content}

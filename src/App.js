@@ -1,5 +1,11 @@
 import React from "react";
 import Chat from "./Chat";
+<<<<<<< HEAD
+
+function App() {
+  return (
+    <div>
+      <Chat />
 import {useState, useEffect} from "react";
 import Login from "./Login";
 
@@ -18,7 +24,6 @@ useEffect(() => {const storedUsername = localStorage.getItem("username");
   return (
     <div>
    {username ? <Chat username={username}/> :<Login onLogin={handleLogin}/>}
-
     </div>
   );
 }
